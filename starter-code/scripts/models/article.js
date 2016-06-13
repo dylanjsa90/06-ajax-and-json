@@ -11,7 +11,7 @@ function Article (opts) {
  to track, that relates to ALL of the Article objects, so it does not belong on
  the prototype, as that would only be relevant to a single instantiated Article.
  */
-
+Article.all = [];
 
 Article.prototype.toHtml = function(scriptTemplateId) {
   var template = Handlebars.compile($(scriptTemplateId).text());
@@ -32,18 +32,31 @@ Article.prototype.toHtml = function(scriptTemplateId) {
 
 /* TODO: Refactor this code into a function for greater control.
     It will take in our data, and process it via the Article constructor: */
-ourLocalData.sort(function(a,b) {
-  return (new Date(b.publishedOn)) - (new Date(a.publishedOn));
-});
-ourLocalData.forEach(function(ele) {
-  articles.push(new Article(ele));
-});
+Article.loadAll = function(dataWePassIn) {
+  dataWePassIn.sort(function(a,b) {
+    return (new Date(b.publishedOn)) - (new Date(a.publishedOn));
+  }).forEach(function(ele) {
+    Article.all.push(new Article(ele));
+  });
+};
 
 /* This function below will retrieve the data from either a local or remote
  source, process it, then hand off control to the View: */
 
+Article.fetchAll = function() {
+  if (localStorage.hackerIpsum) {
+    Article.loadAll(JSON.parse(localStorage.hackerIpsum));
+    articleView.renderIndexPage();
+  } else {
+    $.getJSON('hackerIpsum.json', handleDataRetrevial);
+  }
+};
 
-
+function handleDataRetrevial(data) {
+  Article.loadAll(JSON.parse(data));
+  localStorage.hackerIpsum = data;
+  articleView.renderIndexPage();
+}
 
 
 
