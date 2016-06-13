@@ -48,7 +48,6 @@ Article.fetchAll = function() {
     var ajaxCall = $.ajax({
       url: 'data/hackerIpsum.json',
       type: 'HEAD',
-      // dataType: 'json'
     })
     .done(function(data, message, xhr) {
       if (JSON.parse(localStorage.getItem('ETag')) !== xhr.getResponseHeader('ETag')) {
@@ -71,7 +70,6 @@ Article.fetchAll = function() {
     var ajaxCall = $.ajax({
       url: 'data/hackerIpsum.json',
       type: 'HEAD',
-      // dataType: 'json'
     })
     .done(function(data, message, xhr) {
       localStorage.setItem('ETag', JSON.stringify(xhr.getResponseHeader('ETag')));
@@ -79,7 +77,6 @@ Article.fetchAll = function() {
     });
   }
 };
-
 
 
 
