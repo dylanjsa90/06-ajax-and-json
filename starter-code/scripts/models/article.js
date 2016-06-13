@@ -45,21 +45,43 @@ Article.loadAll = function(dataWePassIn) {
 
 Article.fetchAll = function() {
   if (localStorage.hackerIpsum) {
-    var data = JSON.parse(localStorage.getItem('hackerIpsum'));
-
-    Article.loadAll(data);
-    articleView.renderIndexPage();
+    var ajaxCall = $.ajax({
+      url: 'data/hackerIpsum.json',
+      type: 'HEAD',
+      // dataType: 'json'
+    })
+    .done(function(data, message, xhr) {
+      if (JSON.parse(localStorage.getItem('ETag')) !== xhr.getResponseHeader('ETag')) {
+        console.log(xhr.getResponseHeader('ETag'));
+        localStorage.setItem('ETag', JSON.stringify(xhr.getResponseHeader('ETag')));
+        $.getJSON('../../data/hackerIpsum.json', function(data) {
+          localStorage.setItem('hackerIpsum', JSON.stringify(data));
+        });
+      }
+      var data = JSON.parse(localStorage.getItem('hackerIpsum'));
+      Article.loadAll(data);
+      articleView.renderIndexPage();
+    });
   } else {
-    $.getJSON('../../data/hackerIpsum.json', handleJSONdata);
+    $.getJSON('../../data/hackerIpsum.json', function(data) {
+      localStorage.setItem('hackerIpsum', JSON.stringify(data));
+      Article.loadAll(data);
+      articleView.renderIndexPage();
+    });
+    var ajaxCall = $.ajax({
+      url: 'data/hackerIpsum.json',
+      type: 'HEAD',
+      // dataType: 'json'
+    })
+    .done(function(data, message, xhr) {
+      localStorage.setItem('ETag', JSON.stringify(xhr.getResponseHeader('ETag')));
+      console.log(xhr.getResponseHeader('ETag'));
+    });
   }
 };
 
-function handleJSONdata(data) {
-  localStorage.setItem('hackerIpsum', data);
-  Article.loadAll(JSON.parse(data));
-  articleView.renderIndexPage();
-}
-Article.fetchAll();
+
+
 
 
 
