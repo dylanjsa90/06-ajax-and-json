@@ -98,4 +98,5 @@ articleView.renderIndexPage = function() {
   articleView.handleMainNav();
   articleView.setTeasers();
   // TODO: start the retrieval process for our data!
+  Article.fetchAll();
 };

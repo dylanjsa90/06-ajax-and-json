@@ -45,18 +45,21 @@ Article.loadAll = function(dataWePassIn) {
 
 Article.fetchAll = function() {
   if (localStorage.hackerIpsum) {
-    Article.loadAll(JSON.parse(localStorage.hackerIpsum));
+    var data = JSON.parse(localStorage.getItem('hackerIpsum'));
+    console.log(data);
+    Article.loadAll(data);
     articleView.renderIndexPage();
   } else {
-    $.getJSON('hackerIpsum.json', handleDataRetrevial);
+    $.getJSON('../../data/hackerIpsum.json', handleJSONdata);
   }
 };
 
-function handleDataRetrevial(data) {
-  Article.loadAll(JSON.parse(data));
-  localStorage.hackerIpsum = data;
+function handleJSONdata(data) {
+  localStorage.setItem('hackerIpsum', JSON.stringify(data));
+  Article.loadAll(data);
   articleView.renderIndexPage();
 }
+Article.fetchAll();
 
 
 
