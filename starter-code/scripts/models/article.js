@@ -46,7 +46,7 @@ Article.loadAll = function(dataWePassIn) {
 Article.fetchAll = function() {
   if (localStorage.hackerIpsum) {
     var data = JSON.parse(localStorage.getItem('hackerIpsum'));
-    console.log(data);
+
     Article.loadAll(data);
     articleView.renderIndexPage();
   } else {
@@ -55,8 +55,8 @@ Article.fetchAll = function() {
 };
 
 function handleJSONdata(data) {
-  localStorage.setItem('hackerIpsum', JSON.stringify(data));
-  Article.loadAll(data);
+  localStorage.setItem('hackerIpsum', data);
+  Article.loadAll(JSON.parse(data));
   articleView.renderIndexPage();
 }
 Article.fetchAll();
