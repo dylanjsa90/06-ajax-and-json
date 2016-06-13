@@ -48,16 +48,14 @@ Article.fetchAll = function() {
     var data = JSON.parse(localStorage.getItem('hackerIpsum'));
 
     Article.loadAll(data);
-    articleView.renderIndexPage();
   } else {
     $.getJSON('../../data/hackerIpsum.json', handleJSONdata);
   }
 };
 
 function handleJSONdata(data) {
-  localStorage.setItem('hackerIpsum', data);
-  Article.loadAll(JSON.parse(data));
-  articleView.renderIndexPage();
+  localStorage.setItem('hackerIpsum', JSON.stringify(data));
+  Article.loadAll(data);
 }
 Article.fetchAll();
 
