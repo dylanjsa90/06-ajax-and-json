@@ -99,3 +99,5 @@ articleView.renderIndexPage = function() {
   articleView.setTeasers();
   // TODO: start the retrieval process for our data!
 };
+
+Article.fetchAll();

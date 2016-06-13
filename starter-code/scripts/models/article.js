@@ -11,7 +11,7 @@ function Article (opts) {
  to track, that relates to ALL of the Article objects, so it does not belong on
  the prototype, as that would only be relevant to a single instantiated Article.
  */
-
+Article.all = [];
 
 Article.prototype.toHtml = function(scriptTemplateId) {
   var template = Handlebars.compile($(scriptTemplateId).text());
@@ -32,15 +32,53 @@ Article.prototype.toHtml = function(scriptTemplateId) {
 
 /* TODO: Refactor this code into a function for greater control.
     It will take in our data, and process it via the Article constructor: */
-ourLocalData.sort(function(a,b) {
-  return (new Date(b.publishedOn)) - (new Date(a.publishedOn));
-});
-ourLocalData.forEach(function(ele) {
-  articles.push(new Article(ele));
-});
+Article.loadAll = function(dataWePassIn) {
+  dataWePassIn.sort(function(a,b) {
+    return (new Date(b.publishedOn)) - (new Date(a.publishedOn));
+  }).forEach(function(ele) {
+    Article.all.push(new Article(ele));
+  });
+};
 
 /* This function below will retrieve the data from either a local or remote
  source, process it, then hand off control to the View: */
+
+Article.fetchAll = function() {
+  if (localStorage.hackerIpsum) {
+    var ajaxCall = $.ajax({
+      url: 'data/hackerIpsum.json',
+      type: 'HEAD',
+      // dataType: 'json'
+    })
+    .done(function(data, message, xhr) {
+      if (JSON.parse(localStorage.getItem('ETag')) !== xhr.getResponseHeader('ETag')) {
+        console.log(xhr.getResponseHeader('ETag'));
+        localStorage.setItem('ETag', JSON.stringify(xhr.getResponseHeader('ETag')));
+        $.getJSON('../../data/hackerIpsum.json', function(data) {
+          localStorage.setItem('hackerIpsum', JSON.stringify(data));
+        });
+      }
+      var data = JSON.parse(localStorage.getItem('hackerIpsum'));
+      Article.loadAll(data);
+      articleView.renderIndexPage();
+    });
+  } else {
+    $.getJSON('../../data/hackerIpsum.json', function(data) {
+      localStorage.setItem('hackerIpsum', JSON.stringify(data));
+      Article.loadAll(data);
+      articleView.renderIndexPage();
+    });
+    var ajaxCall = $.ajax({
+      url: 'data/hackerIpsum.json',
+      type: 'HEAD',
+      // dataType: 'json'
+    })
+    .done(function(data, message, xhr) {
+      localStorage.setItem('ETag', JSON.stringify(xhr.getResponseHeader('ETag')));
+      console.log(xhr.getResponseHeader('ETag'));
+    });
+  }
+};
 
 
 
