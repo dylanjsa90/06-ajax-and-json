@@ -46,18 +46,18 @@ Article.loadAll = function(dataWePassIn) {
 Article.fetchAll = function() {
   if (localStorage.hackerIpsum) {
     var data = JSON.parse(localStorage.getItem('hackerIpsum'));
-
     Article.loadAll(data);
+    articleView.renderIndexPage();
   } else {
-    $.getJSON('../../data/hackerIpsum.json', handleJSONdata);
+    $.getJSON('../../data/hackerIpsum.json', function(data) {
+      localStorage.setItem('hackerIpsum', JSON.stringify(data));
+      Article.loadAll(data);
+      articleView.renderIndexPage();
+    });
   }
 };
 
-function handleJSONdata(data) {
-  localStorage.setItem('hackerIpsum', JSON.stringify(data));
-  Article.loadAll(data);
-}
-Article.fetchAll();
+
 
 
 
