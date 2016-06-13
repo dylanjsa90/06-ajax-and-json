@@ -100,5 +100,4 @@ articleView.renderIndexPage = function() {
   // TODO: start the retrieval process for our data!
 
 };
-
-articleView.renderIndexPage();
+Article.fetchAll();
